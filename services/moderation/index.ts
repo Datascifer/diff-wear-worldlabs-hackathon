@@ -17,6 +17,9 @@ const THREAT_THRESHOLD = 0.70;
 const SEXUAL_THRESHOLD_ADULT = 0.85;
 const SEXUAL_THRESHOLD_MINOR = 0.50;
 const IDENTITY_ATTACK_THRESHOLD = 0.75;
+const SELF_HARM_THRESHOLD = 0.50;
+// sexual/minors is always critical regardless of age_tier — zero tolerance
+const SEXUAL_MINORS_THRESHOLD = 0.30;
 // Sentinel value returned by classifier.ts on API failure
 const FAIL_OPEN_SENTINEL = -1;
 
@@ -65,6 +68,12 @@ export async function classifyText(
       allowed: false,
       reason: "Content contains identity-based attacks.",
     };
+  }
+  if (scores.selfHarm >= SELF_HARM_THRESHOLD) {
+    return { allowed: false, reason: "Content references self-harm." };
+  }
+  if (scores.sexualMinors >= SEXUAL_MINORS_THRESHOLD) {
+    return { allowed: false, reason: "Content violates child safety policy." };
   }
 
   return { allowed: true };
