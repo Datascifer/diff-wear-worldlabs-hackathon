@@ -1,20 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils/cn";
 import type { PlanType } from "@/types/domain";
 
-type GradientName = "solar" | "cosmic" | "aurora" | "divine" | "flame";
-
-const PLAN_TYPE_META: Record<
-  PlanType,
-  { icon: string; gradient: GradientName }
-> = {
-  cardio: { icon: "🏃", gradient: "flame" },
-  strength: { icon: "💪", gradient: "solar" },
-  flexibility: { icon: "🧘", gradient: "aurora" },
-  breathwork: { icon: "🌬️", gradient: "divine" },
+const PLAN_TYPE_META: Record<PlanType, { icon: string; color: string; bg: string }> = {
+  cardio:      { icon: "⚡", color: "#FF6B00", bg: "rgba(255,107,0,0.15)"  },
+  strength:    { icon: "◈",  color: "#E8003D", bg: "rgba(232,0,61,0.12)"   },
+  flexibility: { icon: "◯",  color: "#A855FF", bg: "rgba(168,85,255,0.12)" },
+  breathwork:  { icon: "∿",  color: "#4DA6FF", bg: "rgba(77,166,255,0.12)" },
 };
 
 interface WorkoutCardProps {
@@ -32,72 +25,85 @@ export function WorkoutCard({ plan }: WorkoutCardProps) {
   const meta = PLAN_TYPE_META[plan.plan_type];
 
   const handleToggle = async () => {
-    const newCompleted = !completed;
-    setCompleted(newCompleted);
-    if (newCompleted) {
+    const next = !completed;
+    setCompleted(next);
+    if (next) {
       await fetch("/api/move/log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          planId: plan.id,
-          durationMinutes: plan.duration_minutes,
-        }),
-      }).catch(() => {
-        // Fail silently — streak syncs on next load
-      });
+        body: JSON.stringify({ planId: plan.id, durationMinutes: plan.duration_minutes }),
+      }).catch(() => null);
     }
   };
 
   return (
-    <Card gradient={meta.gradient} className={cn(completed ? "opacity-60" : "")}>
-      <div className="flex items-center gap-3">
-        <span className="text-2xl flex-shrink-0" aria-hidden="true">
-          {meta.icon}
-        </span>
-        <div className="flex-1 min-w-0">
-          <p
-            className={cn(
-              "text-white font-medium text-sm",
-              completed ? "line-through text-white/50" : ""
-            )}
-          >
-            {plan.title}
-          </p>
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-white/40 text-xs">
-              {plan.duration_minutes} min
-            </span>
-            <span className="text-white/20 text-xs">•</span>
-            <span className="text-white/40 text-xs italic">
-              {plan.scripture_reference}
-            </span>
-          </div>
-        </div>
-        <button
-          onClick={() => {
-            void handleToggle();
-          }}
-          className={cn(
-            "w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all",
-            completed
-              ? "border-transparent text-black"
-              : "border-white/20 text-transparent"
-          )}
-          style={
-            completed
-              ? { background: "linear-gradient(135deg, #FFD600, #FF6B00)" }
-              : {}
-          }
-          aria-label={completed ? "Mark incomplete" : "Mark complete"}
-          aria-pressed={completed}
-        >
-          {completed && (
-            <span className="text-xs" aria-hidden="true">
-              ✓
-            </span>
-          )}
-        </button>
+    <div
+      className="rounded-lg p-4 flex items-center gap-4 transition-all"
+      style={{
+        background: completed ? "var(--color-bg-surface)" : "var(--color-glass-bg)",
+        backdropFilter: completed ? "none" : "blur(16px)",
+        WebkitBackdropFilter: completed ? "none" : "blur(16px)",
+        border: "1px solid var(--color-border-default)",
+        opacity: completed ? 0.55 : 1,
+      }}
+    >
+      {/* Type icon */}
+      <div
+        className="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 text-base font-bold"
+        style={{ background: meta.bg, color: meta.color }}
+        aria-hidden="true"
+      >
+        {meta.icon}
       </div>
-    </Card>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <p
+          className="text-sm font-semibold"
+          style={{
+            color: completed ? "var(--color-text-tertiary)" : "var(--color-text-primary)",
+            textDecoration: completed ? "line-through" : "none",
+          }}
+        >
+          {plan.title}
+        </p>
+        {/* Faith + movement pairing — the split line */}
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            {plan.duration_minutes} min
+          </span>
+          <span
+            className="w-px h-3 inline-block"
+            style={{ background: "var(--color-border-strong)" }}
+            aria-hidden="true"
+          />
+          <span
+            className="text-xs italic truncate"
+            style={{ color: "var(--color-accent-purple)", opacity: 0.80 }}
+          >
+            {plan.scripture_reference}
+          </span>
+        </div>
+      </div>
+
+      {/* Completion toggle */}
+      <button
+        onClick={() => { void handleToggle(); }}
+        className="w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all active:scale-90"
+        style={
+          completed
+            ? { background: "var(--gradient-flame)", border: "none" }
+            : { background: "transparent", borderColor: "var(--color-border-strong)" }
+        }
+        aria-label={completed ? "Mark incomplete" : "Mark complete"}
+        aria-pressed={completed}
+      >
+        {completed && (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        )}
+      </button>
+    </div>
   );
 }

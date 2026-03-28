@@ -58,12 +58,12 @@ export default async function MovePage() {
     <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
       <div>
         <h1
-          className="text-2xl font-bold text-white"
-          style={{ fontFamily: "Playfair Display, serif" }}
+          className="text-2xl font-bold"
+          style={{ fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}
         >
           Move
         </h1>
-        <p className="text-white/50 text-sm">
+        <p className="text-sm mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
           Honor your body. Strengthen your spirit.
         </p>
       </div>
@@ -74,7 +74,10 @@ export default async function MovePage() {
       />
 
       <div>
-        <h2 className="text-white/60 text-xs uppercase tracking-widest mb-3">
+        <h2
+          className="text-xs uppercase tracking-widest mb-3"
+          style={{ color: "var(--color-text-tertiary)", letterSpacing: "0.10em" }}
+        >
           Today&apos;s Plans
         </h2>
         <div className="space-y-3">
@@ -86,24 +89,27 @@ export default async function MovePage() {
 
       {/* World Labs teaser */}
       <div
-        className="rounded-3xl p-5 text-center space-y-2"
+        className="rounded-lg p-5 text-center space-y-2"
         style={{
-          background:
-            "linear-gradient(135deg, rgba(123,47,255,0.15), rgba(0,87,255,0.15))",
-          border: "1px solid rgba(123,47,255,0.3)",
+          background: "rgba(168,85,255,0.08)",
+          border: "1px solid rgba(168,85,255,0.20)",
         }}
       >
-        <div className="text-2xl">🌍</div>
-        <h3 className="text-white font-semibold">World Labs</h3>
-        <p className="text-white/50 text-sm leading-relaxed">
-          City-wide fitness challenges, group workouts, and community events —
-          coming soon.
+        <h3 className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
+          World Labs
+        </h3>
+        <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-tertiary)" }}>
+          City-wide fitness challenges and community events — coming soon.
         </p>
         <span
-          className="inline-block text-xs px-3 py-1 rounded-full font-medium"
-          style={{ background: "rgba(123,47,255,0.3)", color: "#a78bfa" }}
+          className="inline-block text-xs px-3 py-1 rounded-full font-semibold"
+          style={{
+            background: "rgba(168,85,255,0.15)",
+            color: "var(--color-accent-purple)",
+            border: "1px solid rgba(168,85,255,0.25)",
+          }}
         >
-          Coming Soon
+          Phase 3
         </span>
       </div>
     </div>
