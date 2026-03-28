@@ -14,7 +14,8 @@
       "Bash(cat /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/layout.tsx)",
       "Bash(pnpm install:*)",
       "Bash(npm install:*)",
-      "Bash(npx pnpm:*)"
+      "Bash(npx pnpm:*)",
+      "Bash(git push:*)"
     ]
   }
 }
