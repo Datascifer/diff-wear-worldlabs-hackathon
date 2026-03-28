@@ -1,0 +1,21 @@
+{
+  "name": "diiff",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "pnpm --filter @diiff/web dev",
+    "build": "pnpm --filter @diiff/web build",
+    "lint": "pnpm --filter @diiff/web lint",
+    "typecheck": "pnpm --filter @diiff/web typecheck",
+    "test": "pnpm --filter @diiff/web test",
+    "db:migrate": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > apps/web/lib/supabase/database.types.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0"
+  }
+}
