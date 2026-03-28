@@ -41,6 +41,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}${next}`);
   }
 
-  // New user — collect DOB before proceeding
-  return NextResponse.redirect(`${origin}/register`);
+  // New user — collect profile info (DOB, display name) before proceeding
+  return NextResponse.redirect(`${origin}/register/complete`);
 }

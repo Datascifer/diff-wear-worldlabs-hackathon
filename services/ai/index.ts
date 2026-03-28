@@ -1,127 +1,125 @@
 import { synthesizeSpeech } from "./elevenlabs";
+import { SCRIPTURE_LIST } from "./scripture-list";
 
-// Curated scripture list — date-seeded daily rotation.
-const SCRIPTURES = [
-  {
-    verse: "I can do all things through Christ who strengthens me.",
-    reference: "Philippians 4:13",
-  },
-  {
-    verse: "For God gave us a spirit not of fear but of power and love and self-control.",
-    reference: "2 Timothy 1:7",
-  },
-  {
-    verse: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles.",
-    reference: "Isaiah 40:31",
-  },
-  {
-    verse: "Trust in the Lord with all your heart and lean not on your own understanding.",
-    reference: "Proverbs 3:5",
-  },
-  {
-    verse: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you.",
-    reference: "Joshua 1:9",
-  },
-  {
-    verse: "The Lord is my shepherd; I shall not want.",
-    reference: "Psalm 23:1",
-  },
-  {
-    verse: "And we know that in all things God works for the good of those who love him.",
-    reference: "Romans 8:28",
-  },
-  {
-    verse: "Do not conform to the pattern of this world, but be transformed by the renewing of your mind.",
-    reference: "Romans 12:2",
-  },
-  {
-    verse: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you.",
-    reference: "Jeremiah 29:11",
-  },
-  {
-    verse: "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",
-    reference: "Galatians 6:9",
-  },
-  {
-    verse: "The name of the Lord is a fortified tower; the righteous run to it and are safe.",
-    reference: "Proverbs 18:10",
-  },
-  {
-    verse: "Create in me a pure heart, O God, and renew a steadfast spirit within me.",
-    reference: "Psalm 51:10",
-  },
-];
+export type { Scripture } from "./scripture-list";
 
-function getDailyIndex(date: Date): number {
+function getDayOfYear(date: Date): number {
   const start = new Date(date.getFullYear(), 0, 0);
   const diff = date.getTime() - start.getTime();
-  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-  return dayOfYear % SCRIPTURES.length;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-export async function getDailyScripture(date: Date): Promise<{
+function getDailyIndex(date: Date): number {
+  return getDayOfYear(date) % SCRIPTURE_LIST.length;
+}
+
+export interface ScriptureResult {
   verse: string;
   reference: string;
   audioUrl: string | null;
-}> {
+}
+
+// getDailyScripture — returns the scripture for a given date with optional TTS audio.
+// Audio is cached in Supabase Storage (audio-cache bucket) by date key.
+// If synthesis fails, scripture is still returned (audio is enhancement only).
+export async function getDailyScripture(
+  date: Date,
+  options?: { supabaseServiceClient?: import("@supabase/supabase-js").SupabaseClient }
+): Promise<ScriptureResult> {
   const index = getDailyIndex(date);
-  const scripture = SCRIPTURES[index] ?? SCRIPTURES[0]!;
+  const scripture = SCRIPTURE_LIST[index] ?? SCRIPTURE_LIST[0]!;
 
   const apiKey = process.env.ELEVENLABS_API_KEY;
   const voiceId = process.env.ELEVENLABS_VOICE_ID;
 
   if (!apiKey || !voiceId) {
-    return {
-      verse: scripture.verse,
-      reference: scripture.reference,
-      audioUrl: null,
-    };
+    return { verse: scripture.verse, reference: scripture.reference, audioUrl: null };
   }
 
+  const dateKey = date.toISOString().substring(0, 10); // YYYY-MM-DD
+  const cacheKey = `scripture-${dateKey}.mp3`;
+
+  // Try Supabase Storage cache first
+  if (options?.supabaseServiceClient) {
+    const { data: signedUrl } = await options.supabaseServiceClient.storage
+      .from("audio-cache")
+      .createSignedUrl(cacheKey, 86400); // 24hr expiry — matches scripture rotation
+
+    if (signedUrl?.signedUrl) {
+      return {
+        verse: scripture.verse,
+        reference: scripture.reference,
+        audioUrl: signedUrl.signedUrl,
+      };
+    }
+
+    // Not cached — synthesize and store
+    try {
+      const text = `${scripture.verse} — ${scripture.reference}`;
+      const audioBuffer = await synthesizeSpeech(text, voiceId);
+
+      if (audioBuffer.byteLength > 0) {
+        await options.supabaseServiceClient.storage
+          .from("audio-cache")
+          .upload(cacheKey, audioBuffer, { contentType: "audio/mpeg", upsert: false });
+
+        const { data: freshUrl } = await options.supabaseServiceClient.storage
+          .from("audio-cache")
+          .createSignedUrl(cacheKey, 86400);
+
+        return {
+          verse: scripture.verse,
+          reference: scripture.reference,
+          audioUrl: freshUrl?.signedUrl ?? null,
+        };
+      }
+    } catch (e) {
+      console.error("[ai/scripture] Synthesis or cache failed:", e);
+    }
+
+    return { verse: scripture.verse, reference: scripture.reference, audioUrl: null };
+  }
+
+  // Fallback: no storage client — return base64 data URL (dev mode)
   try {
     const text = `${scripture.verse} — ${scripture.reference}`;
     const audioBuffer = await synthesizeSpeech(text, voiceId);
 
     if (audioBuffer.byteLength === 0) {
-      return {
-        verse: scripture.verse,
-        reference: scripture.reference,
-        audioUrl: null,
-      };
+      return { verse: scripture.verse, reference: scripture.reference, audioUrl: null };
     }
 
-    // In production, upload buffer to Supabase Storage and return a signed URL.
-    // At launch, we return a base64 data URL for simplicity.
     const base64 = Buffer.from(audioBuffer).toString("base64");
-    const audioUrl = `data:audio/mpeg;base64,${base64}`;
-
-    return { verse: scripture.verse, reference: scripture.reference, audioUrl };
-  } catch {
     return {
       verse: scripture.verse,
       reference: scripture.reference,
-      audioUrl: null,
+      audioUrl: `data:audio/mpeg;base64,${base64}`,
     };
+  } catch {
+    return { verse: scripture.verse, reference: scripture.reference, audioUrl: null };
   }
 }
 
+const WORKOUT_SCRIPTS: Record<string, string> = {
+  cardio:
+    "Begin your run by speaking today's scripture aloud. With each mile, release one worry to God. His strength, not yours — let that truth carry you forward.",
+  strength:
+    "Your body is a temple. Train it with purpose and gratitude. Every rep is an act of stewardship. Push through — not because you have to, but because you get to.",
+  flexibility:
+    "Breathe in slowly and release. Be still and know that He is God. Let your body and spirit find rest in this moment of stillness.",
+  breathwork:
+    "Breathe in for four counts. Hold. Release for eight. You were given this breath. Return it in prayer. Let each cycle draw you closer to peace.",
+};
+
 export async function getWorkoutNarration(
-  workoutId: string
+  planType: string
 ): Promise<{ audioUrl: string | null }> {
   const apiKey = process.env.ELEVENLABS_API_KEY;
   const voiceId = process.env.ELEVENLABS_VOICE_ID;
 
   if (!apiKey || !voiceId) return { audioUrl: null };
 
-  const scripts: Record<string, string> = {
-    "1": "Begin your morning breathwork. Breathe in slowly for four counts, hold for four, and release for four. Let this rhythm center you in the presence of God.",
-    "2": "It is time for your upper body workout. Your body is a temple. Train with purpose and gratitude.",
-    "3": "An evening walk. Use this time to reflect, pray, and be present. Walk with intention.",
-    "4": "Flexibility and stillness. Be still and know that He is God. Let your body and spirit rest in this truth.",
-  };
-
-  const script = scripts[workoutId];
-  if (!script) return { audioUrl: null };
+  const script = WORKOUT_SCRIPTS[planType] ?? WORKOUT_SCRIPTS["cardio"]!;
 
   try {
     const audioBuffer = await synthesizeSpeech(script, voiceId);

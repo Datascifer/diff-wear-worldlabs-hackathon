@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = ["/feed", "/move", "/rooms", "/you"];
+const PROTECTED_ROUTES = ["/feed", "/move", "/rooms", "/you", "/admin"];
 const AUTH_ROUTES = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
@@ -47,6 +47,21 @@ export async function middleware(request: NextRequest) {
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(redirectUrl);
+  }
+
+  // Block pending_consent users from app surfaces — they must complete consent first
+  if (user && isProtected && !pathname.startsWith("/admin")) {
+    const { data: profile } = await supabase
+      .from("users")
+      .select("account_status")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.account_status === "pending_consent") {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/register/age-gate";
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   if (isAuthRoute && user) {
