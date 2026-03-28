@@ -1,0 +1,52 @@
+name: Age Policy Guard
+
+on:
+  pull_request:
+    paths:
+      - 'docs/AGE_POLICY.md'
+      - 'db/policies/**'
+      - 'apps/web/lib/utils/age.ts'
+      - 'apps/web/lib/utils/capabilities.ts'
+      - 'services/auth/**'
+
+jobs:
+  age-policy-comment:
+    name: Post Age Policy Review Reminder
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post review reminder comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ⚠️ Age Policy Guard
+
+            This PR modifies one or more files that are part of Diiff's age enforcement system:
+
+            - \`docs/AGE_POLICY.md\`
+            - \`db/policies/**\` (RLS policies)
+            - \`apps/web/lib/utils/age.ts\`
+            - \`apps/web/lib/utils/capabilities.ts\`
+            - \`services/auth/**\`
+
+            **Action required before merge:**
+
+            1. Read [docs/AGE_POLICY.md](./docs/AGE_POLICY.md) and confirm the changes are consistent with the policy.
+            2. Verify that all four enforcement layers are still aligned:
+               - [ ] DB triggers (db/migrations)
+               - [ ] RLS policies (db/policies)
+               - [ ] Service layer (services/auth, services/feed)
+               - [ ] API route handlers (apps/web/app/api)
+            3. Confirm that \`age_tier\` is still never accepted from client input anywhere in the changed code.
+            4. This PR requires review by at least one engineer who did not author the change.
+
+            _This comment is posted automatically by the age-policy-guard workflow._`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

@@ -1,0 +1,25 @@
+# Codex configuration for Diiff
+# Controls behavior of AI coding assistants working in this repository.
+
+[model]
+default = "o4-mini"
+
+[context]
+# These files are always included in the context window for every session.
+# Do not remove entries — they contain critical safety and policy information.
+always_include = [
+  "AGENTS.md",
+  "docs/ARCHITECTURE.md",
+  "docs/AGE_POLICY.md",
+]
+
+[rules]
+# Age enforcement is non-negotiable. Any change to these files
+# requires reading AGE_POLICY.md first.
+sensitive_paths = [
+  "apps/web/lib/utils/age.ts",
+  "apps/web/lib/utils/capabilities.ts",
+  "services/auth/**",
+  "db/policies/**",
+  "db/migrations/**",
+]
