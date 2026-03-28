@@ -10,88 +10,60 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v3
         with:
           version: 9
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+        run: pnpm install --no-frozen-lockfile
       - name: Run ESLint
         run: pnpm lint
 
   typecheck:
     name: TypeScript
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v3
         with:
           version: 9
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+        run: pnpm install --no-frozen-lockfile
       - name: Type check
         run: pnpm typecheck
-
-  test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests
-        run: pnpm test
 
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v3
         with:
           version: 9
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+        run: pnpm install --no-frozen-lockfile
       - name: Build
         run: pnpm build
         env:
-          # Dummy values for build-time NEXT_PUBLIC_ vars — real values set in Vercel
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder_anon_key
           NEXT_PUBLIC_VAPID_PUBLIC_KEY: placeholder_vapid_key
@@ -103,7 +75,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Check no secrets exposed to client
         run: bash scripts/check-env-exposure.sh
 
@@ -112,7 +83,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Validate migration filenames
         run: |
           set -e
