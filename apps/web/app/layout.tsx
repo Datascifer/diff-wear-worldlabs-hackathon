@@ -1,17 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { PushInit } from "@/components/push-init";
 
 export const metadata: Metadata = {
   title: "Diiff — Faith, Fitness & Community",
   description:
     "A faith-centered wellness platform for young people ages 16–25 in New York City.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  icons: {
-    icon: "/favicon.ico",
-  },
+  robots: { index: false, follow: false },
+  icons: { icon: "/favicon.ico" },
 };
 
 export const viewport: Viewport = {
@@ -47,9 +43,8 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body
-        style={{ backgroundColor: "#0a0012", color: "white", margin: 0 }}
-      >
+      <body style={{ backgroundColor: "#0a0012", color: "white", margin: 0 }}>
+        <PushInit />
         {children}
       </body>
     </html>

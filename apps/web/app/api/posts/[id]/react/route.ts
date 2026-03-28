@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse, type NextRequest } from "next/server";
 import type { ApiResult } from "@/types/domain";
+import { checkLimit } from "@/lib/utils/rate-limit";
+import { apiError, apiRateLimited } from "@/lib/utils/api";
 
 export async function POST(
   _request: NextRequest,
@@ -8,16 +10,12 @@ export async function POST(
 ) {
   const supabase = createClient();
 
-  // 1. Validate session
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json<ApiResult<never>>(
-      { success: false, error: { code: "UNAUTHORIZED", message: "Authentication required." } },
-      { status: 401 }
-    );
-  }
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return apiError("UNAUTHORIZED", "Authentication required.", 401);
+
+  // Rate limit: 60 reactions per minute per user
+  const rl = await checkLimit("postReact", user.id);
+  if (!rl.success) return apiRateLimited(rl.reset);
 
   // Toggle: remove if exists, add if not
   const { data: existing } = await supabase

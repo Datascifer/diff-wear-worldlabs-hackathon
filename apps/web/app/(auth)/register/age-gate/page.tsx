@@ -16,15 +16,19 @@ function AgeGateForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/users/me", {
-        method: "PATCH",
+      const res = await fetch("/api/auth/consent/send", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parentConsentEmail: parentEmail }),
+        body: JSON.stringify({ parentEmail }),
       });
 
-      if (!res.ok) {
-        const data = (await res.json()) as { error?: string };
-        setError(data.error ?? "Failed to send consent request. Please try again.");
+      const data = (await res.json()) as {
+        success?: boolean;
+        error?: { message: string };
+      };
+
+      if (!res.ok || !data.success) {
+        setError(data.error?.message ?? "Failed to send consent request. Please try again.");
         return;
       }
 
@@ -52,7 +56,8 @@ function AgeGateForm() {
           will be activated once your parent or guardian approves.
         </p>
         <p className="text-white/40 text-xs">
-          Check your parent&apos;s inbox — the email may take a few minutes to arrive.
+          The link expires in 24 hours. Ask them to check spam if they
+          don&apos;t see it within a few minutes.
         </p>
         <button
           onClick={() => router.push("/login")}
@@ -86,22 +91,18 @@ function AgeGateForm() {
           border: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        <h3 className="text-white font-medium text-sm">
-          What your parent will see
-        </h3>
+        <h3 className="text-white font-medium text-sm">What your parent will see</h3>
         <ul className="text-white/60 text-sm space-y-1.5 list-disc list-inside">
           <li>What Diiff is and who runs it</li>
           <li>What data we collect about your child</li>
-          <li>How their child&apos;s content is moderated</li>
+          <li>How content is moderated before it&apos;s visible</li>
           <li>How to revoke access at any time</li>
           <li>Contact information for our safety team</li>
         </ul>
       </div>
 
       <form
-        onSubmit={(e) => {
-          void handleSubmit(e);
-        }}
+        onSubmit={(e) => { void handleSubmit(e); }}
         className="space-y-4"
       >
         <div className="space-y-1">
