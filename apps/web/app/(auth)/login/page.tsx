@@ -2,119 +2,176 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
   const supabase = createClient();
   const router = useRouter();
+  const [loading, setLoading] = useState<"google" | "apple" | null>(null);
 
   const signInWith = async (provider: "google" | "apple") => {
+    setLoading(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
-      },
+      options: { redirectTo: `${window.location.origin}/api/auth/callback` },
     });
     if (error) {
       router.push("/login?error=auth");
+      setLoading(null);
     }
   };
 
   return (
     <main
-      className="min-h-dvh flex flex-col items-center justify-center px-6"
-      style={{ background: "#0a0012" }}
+      className="min-h-dvh flex flex-col items-center justify-center px-6 relative overflow-hidden"
+      style={{ background: "var(--color-bg-base)" }}
     >
-      <div className="w-full max-w-sm space-y-8">
-        {/* Logo */}
+      {/* Ambient glows */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 65% 50% at 50% 105%, rgba(107,31,255,0.38) 0%, transparent 70%)",
+            "radial-gradient(ellipse 40% 30% at 72% 18%, rgba(255,107,0,0.18) 0%, transparent 60%)",
+          ].join(", "),
+        }}
+      />
+
+      <div className="relative w-full max-w-sm space-y-8 animate-fade-up">
+        {/* Wordmark */}
         <div className="text-center space-y-2">
-          <div className="text-5xl mb-4">🦄</div>
           <h1
-            className="text-3xl font-bold"
+            className="text-5xl font-bold"
             style={{
-              fontFamily: "Playfair Display, serif",
-              background: "linear-gradient(135deg, #FFD600, #FF6B00)",
+              fontFamily: "var(--font-display)",
+              letterSpacing: "-0.02em",
+              background: "var(--gradient-flame)",
               WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
               backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
             }}
           >
             Diiff
           </h1>
-          <p className="text-white/60 text-sm">Faith. Fitness. Community.</p>
-        </div>
-
-        {/* Sign in */}
-        <div className="space-y-3">
-          <p className="text-center text-white/40 text-xs uppercase tracking-widest">
-            Sign in to continue
+          <p
+            className="text-xs uppercase tracking-widest"
+            style={{ color: "var(--color-text-tertiary)", letterSpacing: "0.14em" }}
+          >
+            Faith · Fitness · Community
           </p>
-
-          <button
-            onClick={() => {
-              void signInWith("google");
-            }}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl font-medium text-white transition-all hover:bg-white/10"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </button>
-
-          <button
-            onClick={() => {
-              void signInWith("apple");
-            }}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl font-medium text-white transition-all hover:bg-white/10"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}
-          >
-            <AppleIcon />
-            Continue with Apple
-          </button>
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-white/30 text-xs leading-relaxed">
-          For ages 16–25 only. By continuing you agree to our Terms of Service
-          and Privacy Policy.
-        </p>
+        {/* Glass card */}
+        <div
+          className="rounded-xl p-8 space-y-6"
+          style={{
+            background: "var(--color-glass-bg)",
+            backdropFilter: "blur(var(--blur-md))",
+            WebkitBackdropFilter: "blur(var(--blur-md))",
+            border: "1px solid var(--color-glass-border)",
+            boxShadow: "var(--shadow-lg), 0 0 0 0.5px rgba(255,214,0,0.12) inset",
+          }}
+        >
+          <div className="space-y-1">
+            <h2
+              className="text-xl font-semibold"
+              style={{
+                fontFamily: "var(--font-display)",
+                color: "var(--color-text-primary)",
+              }}
+            >
+              Welcome
+            </h2>
+            <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
+              NYC · Ages 16–25 only
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {/* Apple */}
+            <button
+              onClick={() => { void signInWith("apple"); }}
+              disabled={loading !== null}
+              className="w-full h-12 rounded-md flex items-center justify-center gap-3 font-semibold text-sm transition-all active:scale-[0.97] disabled:opacity-50"
+              style={{ background: "rgba(255,255,255,0.96)", color: "#000" }}
+              aria-label="Continue with Apple"
+            >
+              {loading === "apple" ? (
+                <Spinner dark />
+              ) : (
+                <AppleIcon />
+              )}
+              Continue with Apple
+            </button>
+
+            {/* Google */}
+            <button
+              onClick={() => { void signInWith("google"); }}
+              disabled={loading !== null}
+              className="w-full h-12 rounded-md flex items-center justify-center gap-3 font-medium text-sm transition-all active:scale-[0.97] disabled:opacity-50"
+              style={{
+                background: "transparent",
+                border: "1px solid var(--color-border-strong)",
+                color: "var(--color-text-primary)",
+              }}
+              aria-label="Continue with Google"
+            >
+              {loading === "google" ? (
+                <Spinner />
+              ) : (
+                <GoogleIcon />
+              )}
+              Continue with Google
+            </button>
+          </div>
+
+          <p
+            className="text-xs text-center leading-relaxed"
+            style={{ color: "var(--color-text-tertiary)" }}
+          >
+            By continuing you agree to our{" "}
+            <a href="/terms" className="underline underline-offset-2" style={{ color: "var(--color-text-secondary)" }}>
+              Terms
+            </a>{" "}and{" "}
+            <a href="/privacy" className="underline underline-offset-2" style={{ color: "var(--color-text-secondary)" }}>
+              Privacy Policy
+            </a>
+            . Users under 18 require parental consent before activation.
+          </p>
+        </div>
       </div>
     </main>
   );
 }
 
-function GoogleIcon() {
+function Spinner({ dark }: { dark?: boolean }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <path
-        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
-        fill="#4285F4"
-      />
-      <path
-        d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
-        fill="#34A853"
-      />
-      <path
-        d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
-        fill="#FBBC05"
-      />
-      <path
-        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
-        fill="#EA4335"
-      />
-    </svg>
+    <span
+      className="w-4 h-4 rounded-full border-2 animate-spin"
+      style={{
+        borderColor: dark ? "rgba(0,0,0,0.15)" : "rgba(255,255,255,0.2)",
+        borderTopColor: dark ? "#000" : "#fff",
+      }}
+    />
   );
 }
 
 function AppleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="white">
-      <path d="M12.47 0c.08.85-.25 1.7-.73 2.33-.5.65-1.3 1.16-2.1 1.1-.1-.82.28-1.67.75-2.28C10.9.5 11.73.02 12.47 0zm2.84 4.81c-.18.12-1.74.99-1.72 2.95.02 2.32 2.03 3.1 2.06 3.11-.02.07-.32 1.1-1.05 2.16-.63.93-1.3 1.85-2.34 1.87-1.02.02-1.35-.6-2.52-.6-1.18 0-1.55.59-2.52.62-1 .03-1.76-.99-2.4-1.91C3.1 11 2.26 8.48 3.2 6.77c.46-.85 1.3-1.39 2.2-1.4.99-.02 1.92.66 2.52.66.6 0 1.73-.82 2.9-.7.5.02 1.88.2 2.77 1.48z" />
+    <svg width="17" height="17" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true">
+      <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 411.5 6.7 297.5 6.7 188.8 6.7 84.3 58.4 33 108.4 12.8c46.5-18.7 101.2-27 153.9-27 55.1 0 107 19.6 144.5 37.5L371.1 23.3c47.3-23.4 103.4-37.5 164.4-37.5 57.3 0 109.6 12.8 155.5 38.2C767.5 53.1 814 92.8 814 156.2c0 57.3-46.5 99.2-83.4 129.8-2.6 2-23.9 19.2-26.5 21.5zm-261.6 73.3c-23.6-11.6-46.5-17.4-73.8-17.4-32 0-54.4 12-75.3 30.6-28.2 24.9-39.2 56.5-39.2 89.2s9.7 61.9 34.9 84.5c21.3 19.2 46.5 30.6 76 30.6 30.3 0 55.8-11.9 76.3-31.8 20.8-20.1 30.3-50.5 30.3-81.1 0-31.8-8.7-61.5-29.2-104.6z"/>
+    </svg>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
     </svg>
   );
 }

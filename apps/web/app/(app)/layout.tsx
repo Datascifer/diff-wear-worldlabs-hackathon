@@ -17,7 +17,7 @@ export default async function AppLayout({
   }
 
   return (
-    <div className="min-h-dvh flex flex-col" style={{ background: "#0a0012" }}>
+    <div className="min-h-dvh flex flex-col" style={{ background: "var(--color-bg-base)" }}>
       <main className="flex-1 pb-24">{children}</main>
       <Nav />
     </div>

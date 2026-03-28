@@ -8,35 +8,150 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
 /* ============================================================
-   CSS Custom Properties — Design Tokens
+   Design Tokens — Dark Mode (default)
    ============================================================ */
-:root {
-  /* Gradient definitions */
-  --gradient-solar: linear-gradient(135deg, #FFD600 0%, #FF6B00 100%);
-  --gradient-cosmic: linear-gradient(135deg, #7B2FFF 0%, #0057FF 100%);
-  --gradient-aurora: linear-gradient(135deg, #FF3CAC 0%, #7B2FFF 50%, #0057FF 100%);
-  --gradient-divine: linear-gradient(135deg, #FFD600 0%, #FF3CAC 100%);
-  --gradient-flame: linear-gradient(135deg, #FF1744 0%, #FF6B00 100%);
+:root, [data-theme="dark"] {
+  /* --- Backgrounds --- */
+  --color-bg-base:      #0A0012;
+  --color-bg-subtle:    #0F0020;
+  --color-bg-surface:   #160028;
+  --color-bg-elevated:  #1E0038;
 
-  /* Surface tokens */
-  --surface-base: #0a0012;
-  --surface-elevated: rgba(255, 255, 255, 0.04);
-  --surface-border: rgba(255, 255, 255, 0.08);
+  /* --- Glass surfaces --- */
+  --color-glass-bg:           rgba(30, 10, 60, 0.55);
+  --color-glass-bg-hover:     rgba(40, 15, 75, 0.70);
+  --color-glass-border:       rgba(255, 255, 255, 0.08);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.14);
 
-  /* Typography scale */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
+  /* --- Text --- */
+  --color-text-primary:   #F5F0FF;
+  --color-text-secondary: #B8A8D8;
+  --color-text-tertiary:  #6D5A90;
+  --color-text-disabled:  #3D2F58;
+  --color-text-inverse:   #0A0012;
+
+  /* --- Brand accents --- */
+  --color-accent-yellow: #FFD600;
+  --color-accent-orange: #FF6B00;
+  --color-accent-red:    #E8003D;
+  --color-accent-purple: #A855FF;
+  --color-accent-blue:   #4DA6FF;
+
+  /* --- Semantic --- */
+  --color-success: #00D97E;
+  --color-warning: #FFB300;
+  --color-error:   #FF3355;
+  --color-info:    #4DA6FF;
+
+  /* --- Borders --- */
+  --color-border-default: rgba(255, 255, 255, 0.07);
+  --color-border-strong:  rgba(255, 255, 255, 0.14);
+
+  /* --- Shadows / Glow --- */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.40);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.50);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,0.60);
+  --shadow-glow-yellow: 0 0 32px rgba(255,214,0,0.20), 0 0 64px rgba(255,107,0,0.12);
+  --shadow-glow-purple: 0 0 32px rgba(168,85,255,0.20), 0 0 64px rgba(120,40,255,0.10);
+  --shadow-glow-blue:   0 0 32px rgba(77,166,255,0.15);
+
+  /* --- Overlay --- */
+  --color-overlay: rgba(0, 0, 0, 0.70);
 }
 
 /* ============================================================
-   Base Styles
+   Design Tokens — Light Mode
    ============================================================ */
+[data-theme="light"] {
+  --color-bg-base:      #F7F5FF;
+  --color-bg-subtle:    #EDE8FF;
+  --color-bg-surface:   #FFFFFF;
+  --color-bg-elevated:  #FFFFFF;
+
+  --color-glass-bg:           rgba(255, 255, 255, 0.65);
+  --color-glass-bg-hover:     rgba(255, 255, 255, 0.80);
+  --color-glass-border:       rgba(255, 255, 255, 0.90);
+  --color-glass-border-strong: rgba(180, 160, 255, 0.35);
+
+  --color-text-primary:   #0E0820;
+  --color-text-secondary: #4A3F6B;
+  --color-text-tertiary:  #8B7DB8;
+  --color-text-disabled:  #C4B8E0;
+  --color-text-inverse:   #FFFFFF;
+
+  --color-accent-yellow: #D4A000;
+  --color-accent-orange: #C85200;
+  --color-accent-red:    #C4002B;
+  --color-accent-purple: #6B1FFF;
+  --color-accent-blue:   #0062D4;
+
+  --color-success: #00875A;
+  --color-warning: #B86800;
+  --color-error:   #CC0033;
+  --color-info:    #0062D4;
+
+  --color-border-default: rgba(120, 90, 200, 0.15);
+  --color-border-strong:  rgba(120, 90, 200, 0.30);
+
+  --shadow-sm:  0 1px 3px rgba(80,40,180,0.08), 0 1px 2px rgba(80,40,180,0.06);
+  --shadow-md:  0 4px 16px rgba(80,40,180,0.10), 0 2px 6px rgba(80,40,180,0.08);
+  --shadow-lg:  0 12px 40px rgba(80,40,180,0.14), 0 4px 12px rgba(80,40,180,0.10);
+  --shadow-glow-yellow: 0 0 24px rgba(255,214,0,0.35);
+  --shadow-glow-purple: 0 0 24px rgba(107,31,255,0.25);
+
+  --color-overlay: rgba(14, 8, 32, 0.45);
+}
+
+/* ============================================================
+   Shared Tokens (mode-independent)
+   ============================================================ */
+:root {
+  /* --- Gradients --- */
+  --gradient-flame:  linear-gradient(135deg, #FFD600 0%, #FF6B00 50%, #E8003D 100%);
+  --gradient-aurora: linear-gradient(135deg, #7B2FFF 0%, #4040FF 50%, #0094FF 100%);
+  --gradient-dusk:   linear-gradient(160deg, #2D0057 0%, #7B1230 50%, #FF4500 100%);
+  --gradient-prism:  linear-gradient(135deg, #FF6B00, #FFD600, #00E5A0, #0094FF, #7B2FFF, #E8003D);
+  --gradient-ghost:  linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
+
+  /* --- Spacing --- */
+  --space-1:  4px;  --space-2:  8px;  --space-3: 12px;
+  --space-4: 16px;  --space-5: 20px;  --space-6: 24px;
+  --space-8: 32px;  --space-10: 40px; --space-12: 48px;
+
+  /* --- Corner radii --- */
+  --radius-sm:   8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  32px;
+  --radius-full: 9999px;
+
+  /* --- Blur levels --- */
+  --blur-sm:  8px;
+  --blur-md: 16px;
+  --blur-lg: 32px;
+  --blur-xl: 64px;
+
+  /* --- Typography --- */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'Space Mono', monospace;
+
+  /* --- Transition --- */
+  --ease-snap:   cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-lift:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-settle: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:  150ms;
+  --duration-base:  250ms;
+  --duration-slow:  400ms;
+}
+
+/* ============================================================
+   Base Reset & Root Styles
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,80 +159,176 @@ html {
 }
 
 body {
-  background-color: var(--surface-base);
-  color: white;
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
   min-height: 100dvh;
+  margin: 0;
 }
 
 /* ============================================================
-   Custom Scrollbar
+   Scrollbar
    ============================================================ */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.12); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.24); }
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+@keyframes content-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
+@keyframes reaction-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  70%  { transform: scale(0.90); }
+  100% { transform: scale(1); }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
+@keyframes live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 217, 126, 0.50); }
+  70%  { box-shadow: 0 0 0 8px rgba(0, 217, 126, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 217, 126, 0); }
+}
+
+@keyframes prism-spin {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ============================================================
    Utility Classes
    ============================================================ */
 @layer utilities {
-  .gradient-text-solar {
-    background: var(--gradient-solar);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
 
-  .gradient-text-cosmic {
-    background: var(--gradient-cosmic);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .gradient-text-aurora {
-    background: var(--gradient-aurora);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .gradient-text-divine {
-    background: var(--gradient-divine);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .gradient-text-flame {
+  /* --- Gradient text fills --- */
+  .text-gradient-flame {
     background: var(--gradient-flame);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-
-  .glass {
-    background: var(--surface-elevated);
-    border: 1px solid var(--surface-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  .text-gradient-aurora {
+    background: var(--gradient-aurora);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-prism {
+    background: var(--gradient-prism);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: prism-spin 4s linear infinite;
   }
 
+  /* Legacy aliases — keep for existing components */
+  .gradient-text-solar  { @apply text-gradient-flame; }
+  .gradient-text-cosmic { @apply text-gradient-aurora; }
+  .gradient-text-aurora { @apply text-gradient-aurora; }
+  .gradient-text-divine { @apply text-gradient-flame; }
+  .gradient-text-flame  { @apply text-gradient-flame; }
+
+  /* --- Glass surface --- */
+  .glass {
+    background: var(--color-glass-bg);
+    border: 1px solid var(--color-glass-border);
+    backdrop-filter: blur(var(--blur-md));
+    -webkit-backdrop-filter: blur(var(--blur-md));
+  }
+
+  .glass-elevated {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-strong);
+    backdrop-filter: blur(var(--blur-lg));
+    -webkit-backdrop-filter: blur(var(--blur-lg));
+  }
+
+  /* --- Animation helpers --- */
+  .animate-card-enter {
+    animation: card-enter var(--duration-slow) var(--ease-lift) both;
+  }
+  .animate-fade-up {
+    animation: fade-up var(--duration-slow) var(--ease-lift) both;
+  }
+  .animate-live-pulse {
+    animation: live-pulse 2s ease-in-out infinite;
+  }
+  .animate-reaction-pop {
+    animation: reaction-pop 200ms var(--ease-snap) both;
+  }
+
+  /* --- Safe area --- */
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* --- Gradient borders (pseudo-element technique) --- */
+  .border-gradient-flame {
+    position: relative;
+  }
+  .border-gradient-flame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--gradient-flame);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .border-gradient-aurora {
+    position: relative;
+  }
+  .border-gradient-aurora::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--gradient-aurora);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* ============================================================
+   Focus Ring
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--color-accent-purple);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   Reduced Motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -3,7 +3,18 @@
     "allow": [
       "Bash(git merge:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(ls /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/feed /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/rooms /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/move /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/you)",
+      "Bash(ls /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(auth\\\\\\))",
+      "Bash(cat /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/feed/page.tsx)",
+      "Bash(cat /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/rooms/page.tsx)",
+      "Bash(ls /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(auth\\\\\\)/register)",
+      "Bash(cat /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/move/page.tsx)",
+      "Bash(cat /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/you/page.tsx)",
+      "Bash(cat /c/Users/RUBYO/diff-wear-worldlabs-hackathon/apps/web/app/\\\\\\(app\\\\\\)/layout.tsx)",
+      "Bash(pnpm install:*)",
+      "Bash(npm install:*)",
+      "Bash(npx pnpm:*)"
     ]
   }
 }
