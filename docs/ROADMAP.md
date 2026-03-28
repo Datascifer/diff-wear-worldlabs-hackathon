@@ -49,11 +49,15 @@
 
 ---
 
-## Phase 3 — AI Companions
+## Phase 3 — AI Companions + World Labs Spatial
 
-**Goal**: Introduce contextual, faith-aware AI features — safely.
+**Goal**: Introduce contextual, faith-aware AI features and spatial experiences — safely.
 
 **Deliverables (tentative):**
+- [ ] World Labs Prayer Room (all users)
+- [ ] World Labs Identity Journey (chapter 1 launch, 2-5 rolling)
+- [ ] World Labs Community Campfire (adults only at launch)
+- [ ] Wayfinder badge system
 - AI wellness check-in companion (text, not voice — bounded conversation)
 - Personalized scripture recommendations based on recent posts (opt-in)
 - AI-assisted post prompts (suggestion only, user writes the post)

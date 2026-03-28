@@ -128,3 +128,21 @@ Architectural Decision Records (ADRs) for Diiff. Each entry records a significan
 **Alternatives considered**:
 - Launch with young_adult-only voice rooms — rejected because young_adults and minors share the platform; the distinction in the UI would be confusing and the safety infrastructure still isn't ready
 - Launch without minor voice support but with young_adult voice — deferred; not worth the complexity at launch
+
+---
+
+## ADR-008: World Labs Experiences Are Opt-In and Non-Social for Minors
+
+**Date**: 2026-03-28
+**Status**: Accepted
+
+**Decision**: World Labs spatial experiences are opt-in. Minor-facing experiences (Prayer Room and Identity Journey) are fully private and non-social. Community Campfire is social and adults-only at Phase 3 launch.
+
+**Rationale**:
+- Protects minors by default from live social interaction in immersive contexts.
+- Keeps minor experience scoped to scripted, staff-authored prompts and narration.
+- Aligns with four-layer age enforcement and defense-in-depth policy for adults-only surfaces.
+
+**Alternatives considered**:
+- Shared mixed-age spatial rooms at launch — rejected for safety and moderation risk.
+- AI-generated prompts for Identity Journey — rejected; chapter content is staff-scripted for consistency and safeguarding.

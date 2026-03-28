@@ -52,3 +52,13 @@ LiveKit room tokens will be issued server-side only, scoped to the user's role i
 - Token scope: single room, single user, role from DB
 - Minor users: issued listener-role tokens only, cannot self-promote
 - Token revocation: room close event triggers server-side revoke call to LiveKit API
+
+## Community Campfire (Phase 3)
+
+World Labs powers the spatial layer for Community Campfire as the Phase 3 evolution of voice.
+
+- Campfire is adults-only (18+) at launch.
+- Users are represented as abstract light orbs (no photorealistic avatars).
+- Spatial audio uses LiveKit proximity-based volume.
+- Human moderator presence is required; AI moderation (AssemblyAI + Hive) is a supplemental signal.
+- ElevenLabs scripted narration opens and closes each session.
