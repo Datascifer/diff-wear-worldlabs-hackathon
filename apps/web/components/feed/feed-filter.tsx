@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils/cn";
 
 const FILTERS = [
-  { value: "all", label: "All" },
-  { value: "spirit", label: "Spirit ✝️" },
-  { value: "move", label: "Move 💪" },
-  { value: "community", label: "Community 🌍" },
-  { value: "wellness", label: "Wellness 🌿" },
+  { value: "all",       label: "All" },
+  { value: "spirit",    label: "Spirit",    color: "#A855FF", bg: "rgba(168,85,255,0.15)" },
+  { value: "move",      label: "Move",      color: "#FF6B00", bg: "rgba(255,107,0,0.15)"  },
+  { value: "community", label: "Community", color: "#4DA6FF", bg: "rgba(77,166,255,0.15)" },
+  { value: "wellness",  label: "Wellness",  color: "#00D97E", bg: "rgba(0,217,126,0.12)"  },
 ] as const;
 
 type FilterValue = (typeof FILTERS)[number]["value"];
@@ -32,28 +31,34 @@ export function FeedFilter({ onFilterChange }: FeedFilterProps) {
       role="tablist"
       aria-label="Feed filter"
     >
-      {FILTERS.map(({ value, label }) => (
-        <button
-          key={value}
-          role="tab"
-          aria-selected={active === value}
-          onClick={() => handleSelect(value)}
-          className={cn(
-            "flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap",
-            active === value ? "text-black" : "text-white/50 hover:text-white/80"
-          )}
-          style={
-            active === value
-              ? { background: "linear-gradient(135deg, #FFD600, #FF6B00)" }
-              : {
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }
-          }
-        >
-          {label}
-        </button>
-      ))}
+      {FILTERS.map((f) => {
+        const isActive = active === f.value;
+        return (
+          <button
+            key={f.value}
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => handleSelect(f.value)}
+            className="flex-shrink-0 h-9 px-4 rounded-full text-sm font-medium transition-all whitespace-nowrap"
+            style={
+              isActive
+                ? {
+                    background: f.value === "all" ? "var(--gradient-flame)" : (f as { bg?: string }).bg ?? "var(--gradient-flame)",
+                    color: f.value === "all" ? "#000" : (f as { color?: string }).color ?? "#fff",
+                    border: "none",
+                    boxShadow: f.value === "all" ? "0 2px 12px rgba(255,107,0,0.30)" : "none",
+                  }
+                : {
+                    background: "var(--color-bg-surface)",
+                    color: "var(--color-text-tertiary)",
+                    border: "1px solid var(--color-border-default)",
+                  }
+            }
+          >
+            {f.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

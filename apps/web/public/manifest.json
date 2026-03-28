@@ -1,0 +1,19 @@
+{
+  "name": "Diiff",
+  "short_name": "Diiff",
+  "description": "Faith, Fitness & Community for ages 16–25 in NYC.",
+  "start_url": "/feed",
+  "display": "standalone",
+  "background_color": "#0a0012",
+  "theme_color": "#0a0012",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["health", "fitness", "lifestyle", "social"],
+  "lang": "en-US"
+}

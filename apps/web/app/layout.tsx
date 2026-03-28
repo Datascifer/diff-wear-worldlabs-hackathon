@@ -8,6 +8,12 @@ export const metadata: Metadata = {
     "A faith-centered wellness platform for young people ages 16–25 in New York City.",
   robots: { index: false, follow: false },
   icons: { icon: "/favicon.ico" },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Diiff",
+  },
 };
 
 export const viewport: Viewport = {

@@ -12,7 +12,7 @@ const ContentSecurityPolicy = `
   font-src 'self' https://fonts.gstatic.com;
   img-src 'self' blob: data: https://${supabaseHostname};
   media-src 'self' https://api.elevenlabs.io blob: data:;
-  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.elevenlabs.io https://commentanalyzer.googleapis.com;
+  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.elevenlabs.io https://api.openai.com https://o*.ingest.sentry.io;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
